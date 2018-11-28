@@ -6,7 +6,7 @@ export default StyleSheet.create({
   },
 
   input: {
-    top: 2,
+    top: -10,
     padding: 0,
     margin: 0,
     flex: 1,
@@ -21,7 +21,7 @@ export default StyleSheet.create({
   },
 
   accessory: {
-    top: 2,
+    top: -10,
     justifyContent: 'center',
     alignSelf: 'flex-start',
   },

@@ -93,6 +93,11 @@ export default class TextField extends PureComponent {
 
     containerStyle: (ViewPropTypes || View.propTypes).style,
     inputContainerStyle: (ViewPropTypes || View.propTypes).style,
+
+    lineColor: PropTypes.string,
+    lineColorFocus: PropTypes.string,
+
+    lineColorDisabled: PropTypes.string,
   };
 
   constructor(props) {
@@ -352,6 +357,9 @@ export default class TextField extends PureComponent {
       containerStyle,
       inputContainerStyle: inputContainerStyleOverrides,
       clearTextOnFocus,
+      lineColor,
+      lineColorFocus,
+      lineColorDisabled,
       ...props
     } = this.props;
 
@@ -374,11 +382,15 @@ export default class TextField extends PureComponent {
       'right':
       'left';
 
-    let borderBottomColor = restricted?
+      let borderBottomColor = restricted?
       errorColor:
       focus.interpolate({
         inputRange: [-1, 0, 1],
-        outputRange: [errorColor, baseColor, tintColor],
+        outputRange: [
+          errorColor,
+          lineColor || baseColor,
+          lineColorFocus || lineColor || tintColor
+        ],
       });
 
     let borderBottomWidth = restricted?
@@ -399,15 +411,14 @@ export default class TextField extends PureComponent {
       ...(props.multiline?
         { height: 'web' === Platform.OS ? 'auto' : labelHeight + inputContainerPadding + height }:
         { height: labelHeight + inputContainerPadding + fontSize * 1.5 }),
+        //paddingTop: 12,
+        marginBottom: 6,
     };
 
     let inputStyle = {
       fontSize,
       textAlign,
-
-      color: (disabled || defaultVisible)?
-        baseColor:
-        textColor,
+      color: textColor,
 
       ...(props.multiline?
         {
@@ -475,10 +486,10 @@ export default class TextField extends PureComponent {
       ],
     };
 
-    let lineProps = {
+    let disabledLineProps = {
       type: disabledLineType,
       width: disabledLineWidth,
-      color: baseColor,
+      color: lineColorDisabled || baseColor,
     };
 
     let labelProps = {
@@ -495,6 +506,8 @@ export default class TextField extends PureComponent {
       errored,
       restricted,
       style: labelTextStyle,
+      textColor,
+      disabled,
     };
 
     let counterProps = {
@@ -509,7 +522,7 @@ export default class TextField extends PureComponent {
     return (
       <View {...containerProps}>
         <Animated.View {...inputContainerProps}>
-          {disabled && <Line {...lineProps} />}
+          {disabled && <Line {...disabledLineProps} />}
 
           <Label {...labelProps}>{label}</Label>
 
